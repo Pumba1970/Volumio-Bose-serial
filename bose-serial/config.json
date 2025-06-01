@@ -1,1 +1,33 @@
-{}
+{
+  "sections": [
+    {
+      "id": "general",
+      "element": "section",
+      "label": "Bose Serial Settings",
+      "content": [
+        {
+          "id": "portPath",
+          "element": "input",
+          "type": "text",
+          "label": "Serial Port Path",
+          "value": "/dev/ttyUSB0",
+          "tooltip": "Enter the serial port path (e.g., /dev/ttyUSB0)"
+        },
+        {
+          "id": "baudRate",
+          "element": "select",
+          "label": "Baud Rate",
+          "value": "9600",
+          "options": [
+            { "label": "9600", "value": "9600" },
+            { "label": "19200", "value": "19200" },
+            { "label": "38400", "value": "38400" },
+            { "label": "57600", "value": "57600" },
+            { "label": "115200", "value": "115200" }
+          ],
+          "tooltip": "Select the baud rate for the serial connection"
+        }
+      ]
+    }
+  ]
+}
