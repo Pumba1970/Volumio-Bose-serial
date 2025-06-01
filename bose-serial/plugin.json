@@ -1,0 +1,10 @@
+
+{
+  "id": "bose-serial",
+  "name": "Bose RS232 Control",
+  "plugin_type": "system_controller",
+  "isManuallyInstalled": true,
+  "enabled": false,
+  "volumio_version": ">=3.0.0",
+  "node_version": ">=14.0.0"
+}
