@@ -1,1 +1,48 @@
-
+{
+  "sections": [
+    {
+      "id": "bose-serial-commands",
+      "element": "section",
+      "label": "Bose Serial Controls",
+      "content": [
+        {
+          "id": "sendNow",
+          "element": "button",
+          "label": "Power On",
+          "onClick": {
+            "type": "emit",
+            "event": "sendNow"
+          }
+        },
+        {
+          "id": "sendOff",
+          "element": "button",
+          "label": "Power Off",
+          "onClick": {
+            "type": "emit",
+            "event": "sendOff"
+          }
+        },
+        {
+          "id": "roomAVolPlus",
+          "element": "button",
+          "label": "Room A Volume +",
+          "onClick": {
+            "type": "emit",
+            "event": "roomAVolPlus"
+          }
+        },
+        {
+          "id": "roomAVolMin",
+          "element": "button",
+          "label": "Room A Volume -",
+          "onClick": {
+            "type": "emit",
+            "event": "roomAVolMin"
+          }
+        }
+        // Add more buttons as needed
+      ]
+    }
+  ]
+}
