@@ -1,5 +1,6 @@
-
 const SerialPort = require('serialport');
+const fs = require('fs');
+const path = require('path');
 
 module.exports = class BoseSerialPlugin {
   constructor(context) {
@@ -71,6 +72,13 @@ module.exports = class BoseSerialPlugin {
   }
 
   getUIConfig() {
-    return {};
+    const configPath = path.join(__dirname, 'UIConfig.json');
+    let config = {};
+    try {
+      config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    } catch (e) {
+      this.context.coreCommand.logger.error("Failed to load UIConfig: " + e.message);
+    }
+    return config;
   }
 };
