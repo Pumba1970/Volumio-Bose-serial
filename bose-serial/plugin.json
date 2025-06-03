@@ -1,10 +1,12 @@
-
 {
   "id": "bose-serial",
   "name": "Bose RS232 Control",
-  "plugin_type": "system_controller",
+  "category": "system_controller",
   "isManuallyInstalled": true,
   "enabled": false,
+  "ui": true,
   "volumio_version": ">=3.0.0",
-  "node_version": ">=14.0.0"
+  "node_version": ">=14.0.0",
+  "main": "index.js",
+  "description": "Control Bose systems via serial connection from Volumio."
 }
