@@ -8,7 +8,7 @@ module.exports = class BoseSerialPlugin {
     this.config = context.config;
   }
 
-  async onStart() {
+  onStart() {
     const discoveryPlugin = this.context.coreCommand.pluginManager.getPlugin('system_controller', 'volumiodiscovery');
     const socket = discoveryPlugin ? discoveryPlugin.socket : undefined;
 
@@ -40,7 +40,7 @@ module.exports = class BoseSerialPlugin {
     return Promise.resolve();
   }
 
-  async onStop() {
+  onStop() {
     return Promise.resolve();
   }
 
