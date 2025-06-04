@@ -8,13 +8,13 @@ module.exports = class BoseSerialPlugin {
     this.config = context.config;
   }
 
-  onStart() {
+  async onStart() {
     const discoveryPlugin = this.context.coreCommand.pluginManager.getPlugin('system_controller', 'volumiodiscovery');
     const socket = discoveryPlugin ? discoveryPlugin.socket : undefined;
 
     if (!socket) {
       this.context.coreCommand.logger.error("Bose Serial: Could not obtain Volumio Discovery socket. Plugin will not function.");
-      return false;
+      return Promise.resolve();
     }
 
     const commands = {
@@ -37,17 +37,17 @@ module.exports = class BoseSerialPlugin {
     }
 
     this.sendCommand(commands.sendNow, "Auto Power On bij start");
-    return true;
+    return Promise.resolve();
   }
 
-  onStop() {
-    return true;
+  async onStop() {
+    return Promise.resolve();
   }
 
   sendCommand(hexString, description) {
     const logger = this.context.coreCommand.logger;
     const portPath = this.config.get('portPath') || '/dev/ttyUSB0';
-    const baudRate = parseInt(this.config.get('baudRate') || '9600');
+    const baudRate = parseInt(this.config.get('baudRate') || '9600', 10);
 
     let buffer;
     try {
