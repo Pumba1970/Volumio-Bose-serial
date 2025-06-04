@@ -1,0 +1,22 @@
+{
+  "type": "system_controller",
+  "name": "bose-serial",
+  "title": "Bose Serial",
+  "icon": "fa fa-microchip",
+  "version": "1.0.0",
+  "author": "Your Name",
+  "description": "Control a Bose device via serial interface.",
+  "homepage": "https://github.com/Pumba1970/Volumio-Bose-serial",
+  "enabled": false,
+  "dependencies": [],
+  "keywords": [
+    "bose",
+    "serial",
+    "amplifier",
+    "system"
+  ],
+  "main": "index.js",
+  "volumio_version": ">=3.0.0",
+  "screenshots": [],
+  "license": "MIT"
+}
