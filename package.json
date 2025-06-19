@@ -1,0 +1,23 @@
+{
+  "name": "mastercontrol",
+  "version": "1.0.0",
+  "description": "Master Control plugin for Volumio",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Your Name",
+  "license": "ISC",
+  "volumio_info": {
+    "prettyName": "Master Control",
+    "icon": "fa-sliders",
+    "plugin_type": "miscellanea"
+  },
+  "dependencies": {
+    "fs-extra": "^11.1.1",
+    "kew": "^0.7.0",
+    "v-conf": "^1.4.0",
+    "serialport": "^11.0.0",
+    "rimraf": "^5.0.1"
+  }
+}

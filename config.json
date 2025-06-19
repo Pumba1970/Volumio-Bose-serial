@@ -1,0 +1,6 @@
+{
+  "SERIALPORTDEVICE": {
+    "type": "string",
+    "value": "ttyUSB0"
+  }
+}
