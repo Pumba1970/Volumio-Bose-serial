@@ -1,6 +1,6 @@
 # Mastercontrol Plugin for Volumio
 
-This plugin allows you to control your audio equipment via serial commands from your Volumio system.
+This plugin allows you to control your Bose lifestyle 38 or 48 audio equipment via serial commands from your Volumio system.
 
 ## Installation
 
