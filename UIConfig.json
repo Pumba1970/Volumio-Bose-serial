@@ -92,21 +92,21 @@
           "onClick": {"type":"emit", "message":"callMethod", "data":{"endpoint":"miscellanea/mastercontrol", "method":"SendCommand", "data":"volumeplus Room 2"}}
         },
         {
-          "id": "BOSE_VOLUME_MINUS_ROOM2",
+          "id": "BOSE_VOLUME_MINUSPLUS_ROOM2",
           "element": "button",
-          "label": "Volume - Room 2",
+          "label": "Volume + Room 2",
           "onClick": {"type":"emit", "message":"callMethod", "data":{"endpoint":"miscellanea/mastercontrol", "method":"SendCommand", "data":"volumeminus Room 2"}}
         },
         {
-          "id": "BOSE_MUTE_ROOM2",
+          "id": "BOSE_VOLUME_MUTE_ROOM2",
           "element": "button",
-          "label": "Mute Room 2",
+          "label": "Volume + Room 2",
           "onClick": {"type":"emit", "message":"callMethod", "data":{"endpoint":"miscellanea/mastercontrol", "method":"SendCommand", "data":"mute Room 2"}}
         },
         {
           "id": "BOSE_CABSAT_ROOM2",
           "element": "button",
-          "label": "Cab/Sat Room 2",
+          "label": "Cab/Sat Room 1",
           "onClick": {"type":"emit", "message":"callMethod", "data":{"endpoint":"miscellanea/mastercontrol", "method":"SendCommand", "data":"cabsat Room 2"}}
         }
       ]
