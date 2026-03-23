@@ -36,7 +36,7 @@ After installation, configure the plugin through the Volumio web interface:
 1. Go to Settings > Plugins
 2. Find "Master Control" in the Miscellanea section
 3. Configure your serial port (e.g., ttyAMA0 or ttyUSB0)
-
+4. configure MQTT settings
 ## Features
 
 - Control power, volume, and source selection
@@ -49,3 +49,4 @@ If you encounter issues:
 - Check your serial port configuration
 - Ensure proper permissions for the serial device
 - Review Volumio logs for error messages
+- sudo journalctl -u volumio -f | grep mastercontrol
