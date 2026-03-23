@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Your Name",
+  "author": "Nico Berghs",
   "license": "ISC",
   "volumio_info": {
     "prettyName": "Master Control",
