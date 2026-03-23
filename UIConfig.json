@@ -162,7 +162,7 @@
           "type": "text",
           "element": "input",
           "label": "MQTT Broker Address",
-          "value": "192.168.178.65",
+          "value": "***.***.***.***",
           "doc": "IP address or hostname of the MQTT broker"
         },
         {
@@ -178,7 +178,7 @@
           "type": "text",
           "element": "input",
           "label": "MQTT Username",
-          "value": "mqtt",
+          "value": "******",
           "doc": "MQTT broker username"
         },
         {
@@ -186,7 +186,7 @@
           "type": "password",
           "element": "input",
           "label": "MQTT Password",
-          "value": "mqtt",
+          "value": "******",
           "doc": "MQTT broker password"
         }
       ]
