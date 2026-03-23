@@ -2,5 +2,21 @@
   "SERIALPORTDEVICE": {
     "type": "string",
     "value": "ttyUSB0"
+  },
+  "MQTT_HOST": {
+    "type": "string",
+    "value": "192.168.178.65"
+  },
+  "MQTT_PORT": {
+    "type": "number",
+    "value": 1883
+  },
+  "MQTT_USER": {
+    "type": "string",
+    "value": "mqtt"
+  },
+  "MQTT_PASSWORD": {
+    "type": "string",
+    "value": "mqtt"
   }
 }

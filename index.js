@@ -3,10 +3,28 @@
 var libQ = require('kew');
 var fs = require('fs-extra');
 var path = require('path');
+var mqtt = require('mqtt');
 
 // Load config
 var configFile = fs.readJsonSync(__dirname + '/config.json');
 var serial_port_config = configFile.SERIALPORTDEVICE.value;
+
+// MQTT topic → command mapping
+var MQTT_TOPIC_MAP = {
+  'mastercontrol/room1/power':      'power Room 1',
+  'mastercontrol/room1/volumeup':   'volumeplus Room 1',
+  'mastercontrol/room1/volumedown': 'volumeminus Room 1',
+  'mastercontrol/room1/cabsat':     'cabsat Room 1',
+  'mastercontrol/room1/fm':         'fm Room 1',
+  'mastercontrol/room1/mute':       'mute Room 1',
+  'mastercontrol/room2/power':      'power Room 2',
+  'mastercontrol/room2/volumeup':   'volumeplus Room 2',
+  'mastercontrol/room2/volumedown': 'volumeminus Room 2',
+  'mastercontrol/room2/cabsat':     'cabsat Room 2',
+  'mastercontrol/room2/fm':         'fm Room 2',
+  'mastercontrol/room2/mute':       'mute Room 2',
+  'mastercontrol/poweralloff':      'poweralloff'
+};
 
 // Define the mastercontrol constructor function first
 function mastercontrol(context) {
@@ -16,7 +34,15 @@ function mastercontrol(context) {
   this.logger = this.context.logger;
   this.configManager = this.context.configManager;
   this.serial_port_config = serial_port_config;
-  
+  this.mqttClient = null;
+
+  // Load MQTT settings from config
+  var cfg = fs.readJsonSync(__dirname + '/config.json');
+  this.mqtt_host     = (cfg.MQTT_HOST     && cfg.MQTT_HOST.value)     || '192.168.178.65';
+  this.mqtt_port     = (cfg.MQTT_PORT     && cfg.MQTT_PORT.value)     || 1883;
+  this.mqtt_user     = (cfg.MQTT_USER     && cfg.MQTT_USER.value)     || 'mqtt';
+  this.mqtt_password = (cfg.MQTT_PASSWORD && cfg.MQTT_PASSWORD.value) || 'mqtt';
+
   // Load commands from JSON file
   try {
     self.commands = require('./commands.json');
@@ -38,22 +64,80 @@ mastercontrol.prototype.onVolumioStart = function() {
 mastercontrol.prototype.onStart = function() {
   var self = this;
   var defer = libQ.defer();
-  
+
   try {
     self.logger.info("mastercontrol started with serial port: /dev/" + self.serial_port_config);
+    self._startMqtt();
     defer.resolve();
   } catch (e) {
     self.logger.error('Error starting mastercontrol plugin: ' + e.message);
     defer.reject(e);
   }
-  
+
   return defer.promise;
+};
+
+mastercontrol.prototype._startMqtt = function() {
+  var self = this;
+
+  var brokerUrl = 'mqtt://' + self.mqtt_host + ':' + self.mqtt_port;
+  self.logger.info('mastercontrol: connecting to MQTT broker ' + brokerUrl);
+
+  self.mqttClient = mqtt.connect(brokerUrl, {
+    username:    self.mqtt_user,
+    password:    self.mqtt_password,
+    clientId:    'mastercontrol_' + Math.random().toString(16).slice(2, 8),
+    reconnectPeriod: 5000
+  });
+
+  self.mqttClient.on('connect', function() {
+    self.logger.info('mastercontrol: MQTT connected to ' + brokerUrl);
+    var topics = Object.keys(MQTT_TOPIC_MAP);
+    self.mqttClient.subscribe(topics, function(err) {
+      if (err) {
+        self.logger.error('mastercontrol: MQTT subscribe error: ' + err.message);
+      } else {
+        self.logger.info('mastercontrol: MQTT subscribed to ' + topics.join(', '));
+      }
+    });
+  });
+
+  self.mqttClient.on('message', function(topic, message) {
+    var cmd = MQTT_TOPIC_MAP[topic];
+    if (!cmd) {
+      self.logger.warn('mastercontrol: received unknown MQTT topic: ' + topic);
+      return;
+    }
+    self.logger.info('mastercontrol: MQTT [' + topic + '] → SendCommand("' + cmd + '")');
+    self.SendCommand(cmd).fail(function(err) {
+      self.logger.error('mastercontrol: error executing MQTT command "' + cmd + '": ' + err);
+    });
+  });
+
+  self.mqttClient.on('error', function(err) {
+    self.logger.error('mastercontrol: MQTT error: ' + err.message);
+  });
+
+  self.mqttClient.on('reconnect', function() {
+    self.logger.info('mastercontrol: MQTT reconnecting…');
+  });
+
+  self.mqttClient.on('offline', function() {
+    self.logger.warn('mastercontrol: MQTT client went offline');
+  });
 };
 
 mastercontrol.prototype.onStop = function() {
   var self = this;
   var defer = libQ.defer();
-  
+
+  if (self.mqttClient) {
+    self.mqttClient.end(true, {}, function() {
+      self.logger.info('mastercontrol: MQTT client disconnected');
+    });
+    self.mqttClient = null;
+  }
+
   self.logger.info("mastercontrol stopped");
   defer.resolve();
   return defer.promise;
@@ -148,21 +232,38 @@ mastercontrol.prototype.SendCommandRoom2 = function(commanddata) {
 mastercontrol.prototype.saveSettings = function(data) {
   var self = this;
   var defer = libQ.defer();
-  
+
   try {
     var configFile = fs.readJsonSync(__dirname + '/config.json');
-    configFile.SERIALPORTDEVICE.value = data.SERIAL_PORT;
+
+    if (data.SERIAL_PORT !== undefined) {
+      configFile.SERIALPORTDEVICE.value = data.SERIAL_PORT;
+      self.serial_port_config = data.SERIAL_PORT;
+    }
+    if (data.MQTT_HOST !== undefined)     { configFile.MQTT_HOST.value     = data.MQTT_HOST;     self.mqtt_host     = data.MQTT_HOST; }
+    if (data.MQTT_PORT !== undefined)     { configFile.MQTT_PORT.value     = parseInt(data.MQTT_PORT, 10); self.mqtt_port = parseInt(data.MQTT_PORT, 10); }
+    if (data.MQTT_USER !== undefined)     { configFile.MQTT_USER.value     = data.MQTT_USER;     self.mqtt_user     = data.MQTT_USER; }
+    if (data.MQTT_PASSWORD !== undefined) { configFile.MQTT_PASSWORD.value = data.MQTT_PASSWORD; self.mqtt_password = data.MQTT_PASSWORD; }
+
     fs.writeJsonSync(__dirname + '/config.json', configFile);
-    
-    self.serial_port_config = data.SERIAL_PORT;
-    self.commandRouter.pushToastMessage('success', "Serial Port Updated", "Set new Serial-Hardware: " + data.SERIAL_PORT);
-    
+
+    // Reconnect MQTT with new settings if any MQTT param changed
+    var mqttChanged = data.MQTT_HOST !== undefined || data.MQTT_PORT !== undefined ||
+                      data.MQTT_USER !== undefined || data.MQTT_PASSWORD !== undefined;
+    if (mqttChanged && self.mqttClient) {
+      self.mqttClient.end(true, {}, function() {
+        self.logger.info('mastercontrol: MQTT reconnecting with new settings…');
+        self._startMqtt();
+      });
+    }
+
+    self.commandRouter.pushToastMessage('success', "Settings Updated", "Master Control settings saved.");
     defer.resolve();
   } catch (e) {
     self.logger.error('Error saving settings: ' + e.message);
     defer.reject(e);
   }
-  
+
   return defer.promise;
 };
 
@@ -177,26 +278,27 @@ mastercontrol.prototype.getUIConfig = function() {
       __dirname+'/i18n/strings_en.json',
       __dirname + '/UIConfig.json')
       .then(function(uiconf) {
-        // Find the serial port setting section
-        var serialPortSection = null;
+        // Populate live values for all settings fields
+        var fieldValues = {
+          'SERIAL_PORT':    self.serial_port_config,
+          'MQTT_HOST':      self.mqtt_host,
+          'MQTT_PORT':      self.mqtt_port,
+          'MQTT_USER':      self.mqtt_user,
+          'MQTT_PASSWORD':  self.mqtt_password
+        };
+
         for (var i = 0; i < uiconf.sections.length; i++) {
-          if (uiconf.sections[i].id === 'serialport-setting') {
-            serialPortSection = uiconf.sections[i];
-            break;
-          }
-        }
-        
-        if (serialPortSection) {
-          // Find the SERIAL_PORT input field
-          for (var j = 0; j < serialPortSection.content.length; j++) {
-            if (serialPortSection.content[j].id === 'SERIAL_PORT') {
-              // Set the current value
-              serialPortSection.content[j].value = self.serial_port_config;
-              break;
+          var section = uiconf.sections[i];
+          if (section.content) {
+            for (var j = 0; j < section.content.length; j++) {
+              var field = section.content[j];
+              if (field.id && fieldValues.hasOwnProperty(field.id)) {
+                field.value = fieldValues[field.id];
+              }
             }
           }
         }
-        
+
         defer.resolve(uiconf);
       })
       .fail(function(error) {

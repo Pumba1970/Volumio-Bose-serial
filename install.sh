@@ -15,7 +15,7 @@ sudo pip3 install pyserial
 # Install Node.js dependencies
 echo "Installing npm dependencies..."
 npm install --no-save
-npm install fs-extra@11.1.1 rimraf@5.0.1 serialport@11.0.0 --no-save
+npm install fs-extra@11.1.1 rimraf@5.0.1 serialport@11.0.0 mqtt@5.3.4 --no-save
 
 # Fix permissions
 sudo chown -R volumio:volumio /data/plugins/miscellanea/mastercontrol

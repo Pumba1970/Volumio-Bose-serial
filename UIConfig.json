@@ -70,6 +70,12 @@
           "element": "button",
           "label": "Cab/Sat Room 1",
           "onClick": {"type":"emit", "message":"callMethod", "data":{"endpoint":"miscellanea/mastercontrol", "method":"SendCommand", "data":"cabsat Room 1"}}
+        },
+        {
+          "id": "BOSE_FM_ROOM1",
+          "element": "button",
+          "label": "FM Room 1",
+          "onClick": {"type":"emit", "message":"callMethod", "data":{"endpoint":"miscellanea/mastercontrol", "method":"SendCommand", "data":"fm Room 1"}}
         }
       ]
     },
@@ -108,6 +114,12 @@
           "element": "button",
           "label": "Cab/Sat Room 2",
           "onClick": {"type":"emit", "message":"callMethod", "data":{"endpoint":"miscellanea/mastercontrol", "method":"SendCommand", "data":"cabsat Room 2"}}
+        },
+        {
+          "id": "BOSE_FM_ROOM2",
+          "element": "button",
+          "label": "FM Room 2",
+          "onClick": {"type":"emit", "message":"callMethod", "data":{"endpoint":"miscellanea/mastercontrol", "method":"SendCommand", "data":"fm Room 2"}}
         }
       ]
     },
@@ -122,6 +134,60 @@
           "element": "button",
           "label": "Power All Off",
           "onClick": {"type":"emit", "message":"callMethod", "data":{"endpoint":"miscellanea/mastercontrol", "method":"SendCommand", "data":"poweralloff"}}
+        }
+      ]
+    },
+    {
+      "id": "mqtt-setting",
+      "element": "section",
+      "label": "MQTT Settings",
+      "icon": "fa-rss",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/mastercontrol",
+        "method": "saveSettings"
+      },
+      "saveButton": {
+        "label": "Save",
+        "data": [
+          "MQTT_HOST",
+          "MQTT_PORT",
+          "MQTT_USER",
+          "MQTT_PASSWORD"
+        ]
+      },
+      "content": [
+        {
+          "id": "MQTT_HOST",
+          "type": "text",
+          "element": "input",
+          "label": "MQTT Broker Address",
+          "value": "192.168.178.65",
+          "doc": "IP address or hostname of the MQTT broker"
+        },
+        {
+          "id": "MQTT_PORT",
+          "type": "number",
+          "element": "input",
+          "label": "MQTT Port",
+          "value": 1883,
+          "doc": "MQTT broker port (default 1883)"
+        },
+        {
+          "id": "MQTT_USER",
+          "type": "text",
+          "element": "input",
+          "label": "MQTT Username",
+          "value": "mqtt",
+          "doc": "MQTT broker username"
+        },
+        {
+          "id": "MQTT_PASSWORD",
+          "type": "password",
+          "element": "input",
+          "label": "MQTT Password",
+          "value": "mqtt",
+          "doc": "MQTT broker password"
         }
       ]
     },

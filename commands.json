@@ -1,8 +1,8 @@
 {
   "default": {
-    "power": "KP %1,,,,,0 0x0D",
-    "power Room 1": "KP %1,,,,,0 0x0D",
-    "power Room 2": "KP %1,,,,,1 0x0D",
+    "power": "KP 1,,,,,0 0x0D",
+    "power Room 1": "KP 1,,,,,0 0x0D",
+    "power Room 2": "KP 1,,,,,1 0x0D",
     "poweralloff": "PAO 0x0D",
 
     "volumeplus": "KP %26,,,,,0 0x0D",
@@ -19,7 +19,9 @@
 
     "sourcetv": "KP %7,,,,,0 0x0D",
     "sourcecd": "KP %4,,,,,0 0x0D",
-    "sourcefm": "KP %63,,,,,0 0x0D",
+    "sourcefm": "KP %3,,,,,0 0x0D",
+    "fm Room 1": "KP %3,,,,,0 0x0D",
+    "fm Room 2": "KP %3,,,,,1 0x0D",
     "sourcephono": "0<=",
     "sourcetape": "0<:",
     "copysourcetotape1": "09?",

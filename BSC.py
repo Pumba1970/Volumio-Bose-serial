@@ -46,41 +46,41 @@ if commands and 'default' in commands:
 if command_line is None:
     # Power commands
     if command == "power":
-        command_line = "KP 1,,,,,0 0x0D"
+        command_line = "KP %1,,,,,0 0x0D"
     elif command == "power Room 1":
-        command_line = "KP 1,,,,,0 0x0D"
+        command_line = "KP %1,,,,,0 0x0D"
     elif command == "power Room 2":
-        command_line = "KP 1,,,,,1 0x0D"
+        command_line = "KP %1,,,,,1 0x0D"
     elif command == "poweralloff":
         command_line = "PAO 0x0D"
     # Volume commands
     elif command == "volumeplus":
-        command_line = "KP 26,,,,,0 0x0D"
+        command_line = "KP %26,,,,,0 0x0D"
     elif command == "volumeplus Room 1":
-        command_line = "KP 26,,,,,0 0x0D"
+        command_line = "KP %26,,,,,0 0x0D"
     elif command == "volumeplus Room 2":
-        command_line = "KP 26,,,,,1 0x0D"
+        command_line = "KP %26,,,,,1 0x0D"
     elif command == "volumeminus":
-        command_line = "KP 27,,,,,0 0x0D"
+        command_line = "KP %27,,,,,0 0x0D"
     elif command == "volumeminus Room 1":
-        command_line = "KP 27,,,,,0 0x0D"
+        command_line = "KP %27,,,,,0 0x0D"
     elif command == "volumeminus Room 2":
-        command_line = "KP 27,,,,,1 0x0D"
+        command_line = "KP %27,,,,,1 0x0D"
     elif command == "mute":
-        command_line = "KP 53,,,,,0 0x0D"
+        command_line = "KP %53,,,,,0 0x0D"
     elif command == "mute Room 1":
-        command_line = "KP 53,,,,,0 0x0D"
+        command_line = "KP %53,,,,,0 0x0D"
     elif command == "mute Room 2":
-        command_line = "KP 53,,,,,1 0x0D"
+        command_line = "KP %53,,,,,1 0x0D"
     # Source commands
     elif command == "sourcetv":
-        command_line = "KP 7,,,,,0 0x0D"
+        command_line = "KP %7,,,,,0 0x0D"
     elif command == "sourcecd":
-        command_line = "KP 4,,,,,0 0x0D"
+        command_line = "KP %4,,,,,0 0x0D"
     elif command == "sourcefm":
-        command_line = "KP 63,,,,,0 0x0D"
+        command_line = "KP %3,,,,,0 0x0D"
     elif command == "sourceam":
-        command_line = "KP 54,,,,,0 0x0D"
+        command_line = "KP %54,,,,,0 0x0D"
     elif command == "sourcephono":
         command_line = "0<="
     elif command == "sourcetape":
@@ -90,9 +90,9 @@ if command_line is None:
     elif command == "copysourcetotape2":
         command_line = "09@"
     elif command == "cabsat Room 1":
-        command_line = "KP 54,,,,,0 0x0D"
+        command_line = "KP %54,,,,,0 0x0D"
     elif command == "cabsat Room 2":
-        command_line = "KP 54,,,,,1 0x0D"
+        command_line = "KP %54,,,,,1 0x0D"
     # Numpad
     elif command == "NUMZero":
         command_line = "09:"
