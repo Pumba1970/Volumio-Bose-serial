@@ -77,7 +77,9 @@ if command_line is None:
         command_line = "KP %7,,,,,0 0x0D"
     elif command == "sourcecd":
         command_line = "KP %4,,,,,0 0x0D"
-    elif command == "sourcefm":
+    elif command == "fm Room 1":
+        command_line = "KP %3,,,,,0 0x0D"
+    elif command == "fm Room 2":
         command_line = "KP %3,,,,,0 0x0D"
     elif command == "sourceam":
         command_line = "KP %54,,,,,0 0x0D"
