@@ -23,7 +23,8 @@ var MQTT_TOPIC_MAP = {
   'mastercontrol/room2/cabsat':     'cabsat Room 2',
   'mastercontrol/room2/fm':         'fm Room 2',
   'mastercontrol/room2/mute':       'mute Room 2',
-  'mastercontrol/poweralloff':      'poweralloff'
+  'mastercontrol/poweralloff':      'poweralloff',
+  'mastercontrol/deurbel':          'dingdong'
 };
 
 // Define the mastercontrol constructor function first
@@ -104,14 +105,39 @@ mastercontrol.prototype._startMqtt = function() {
 
   self.mqttClient.on('message', function(topic, message) {
     var cmd = MQTT_TOPIC_MAP[topic];
-    if (!cmd) {
-      self.logger.warn('mastercontrol: received unknown MQTT topic: ' + topic);
+
+if (!cmd) {
+  self.logger.warn('mastercontrol: received unknown MQTT topic: ' + topic);
+  return;
+}
+
+// Special handling for doorbell sound
+if (cmd === 'dingdong') {
+  const { exec } = require('child_process');
+
+  self.logger.info('mastercontrol: Playing ding-dong sound');
+
+  exec('aplay /home/volumio/ding-dong2.wav', (error, stdout, stderr) => {
+    if (error) {
+      self.logger.error('mastercontrol: Error playing dingdong: ' + error.message);
       return;
     }
-    self.logger.info('mastercontrol: MQTT [' + topic + '] → SendCommand("' + cmd + '")');
-    self.SendCommand(cmd).fail(function(err) {
-      self.logger.error('mastercontrol: error executing MQTT command "' + cmd + '": ' + err);
-    });
+
+    if (stderr) {
+      self.logger.warn('mastercontrol: aplay stderr: ' + stderr);
+    }
+
+    self.logger.info('mastercontrol: Ding-dong played successfully');
+  });
+
+  return;
+}
+
+self.logger.info('mastercontrol: MQTT [' + topic + '] → SendCommand("' + cmd + '")');
+
+self.SendCommand(cmd).fail(function(err) {
+  self.logger.error('mastercontrol: error executing MQTT command "' + cmd + '": ' + err);
+});
   });
 
   self.mqttClient.on('error', function(err) {
