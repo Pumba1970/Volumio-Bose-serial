@@ -23,8 +23,12 @@ var MQTT_TOPIC_MAP = {
   'mastercontrol/room2/cabsat':     'cabsat Room 2',
   'mastercontrol/room2/fm':         'fm Room 2',
   'mastercontrol/room2/mute':       'mute Room 2',
-  'mastercontrol/poweralloff':      'poweralloff',
-  'mastercontrol/deurbel':          'dingdong'
+  'mastercontrol/poweralloff':      'poweralloff'
+};
+
+// MQTT topic → shell command mapping (executed directly, not via serial)
+var MQTT_SHELL_MAP = {
+  'mastercontrol/deurbel': 'aplay /home/volumio/ding-dong2.wav'
 };
 
 // Define the mastercontrol constructor function first
@@ -93,7 +97,7 @@ mastercontrol.prototype._startMqtt = function() {
 
   self.mqttClient.on('connect', function() {
     self.logger.info('mastercontrol: MQTT connected to ' + brokerUrl);
-    var topics = Object.keys(MQTT_TOPIC_MAP);
+    var topics = Object.keys(MQTT_TOPIC_MAP).concat(Object.keys(MQTT_SHELL_MAP));
     self.mqttClient.subscribe(topics, function(err) {
       if (err) {
         self.logger.error('mastercontrol: MQTT subscribe error: ' + err.message);
@@ -104,40 +108,32 @@ mastercontrol.prototype._startMqtt = function() {
   });
 
   self.mqttClient.on('message', function(topic, message) {
-    var cmd = MQTT_TOPIC_MAP[topic];
-
-if (!cmd) {
-  self.logger.warn('mastercontrol: received unknown MQTT topic: ' + topic);
-  return;
-}
-
-// Special handling for doorbell sound
-if (cmd === 'dingdong') {
-  const { exec } = require('child_process');
-
-  self.logger.info('mastercontrol: Playing ding-dong sound');
-
-  exec('aplay /home/volumio/ding-dong2.wav', (error, stdout, stderr) => {
-    if (error) {
-      self.logger.error('mastercontrol: Error playing dingdong: ' + error.message);
+    var shellCmd = MQTT_SHELL_MAP[topic];
+    if (shellCmd) {
+      self.logger.info('mastercontrol: MQTT [' + topic + '] → exec("' + shellCmd + '")');
+      var exec = require('child_process').exec;
+      exec(shellCmd, function(error, stdout, stderr) {
+        if (error) {
+          self.logger.error('mastercontrol: error executing shell command "' + shellCmd + '": ' + error.message);
+          return;
+        }
+        if (stderr) {
+          self.logger.warn('mastercontrol: shell command stderr: ' + stderr);
+        }
+        self.logger.info('mastercontrol: shell command executed: ' + shellCmd);
+      });
       return;
     }
 
-    if (stderr) {
-      self.logger.warn('mastercontrol: aplay stderr: ' + stderr);
+    var cmd = MQTT_TOPIC_MAP[topic];
+    if (!cmd) {
+      self.logger.warn('mastercontrol: received unknown MQTT topic: ' + topic);
+      return;
     }
-
-    self.logger.info('mastercontrol: Ding-dong played successfully');
-  });
-
-  return;
-}
-
-self.logger.info('mastercontrol: MQTT [' + topic + '] → SendCommand("' + cmd + '")');
-
-self.SendCommand(cmd).fail(function(err) {
-  self.logger.error('mastercontrol: error executing MQTT command "' + cmd + '": ' + err);
-});
+    self.logger.info('mastercontrol: MQTT [' + topic + '] → SendCommand("' + cmd + '")');
+    self.SendCommand(cmd).fail(function(err) {
+      self.logger.error('mastercontrol: error executing MQTT command "' + cmd + '": ' + err);
+    });
   });
 
   self.mqttClient.on('error', function(err) {
