@@ -43,6 +43,17 @@ After installation, configure the plugin through the Volumio web interface:
 - Support for multiple rooms/zones
 - Customizable commands via commands.json
 
+## 🔔 MQTT Doorbell (Audio Notification) (option)
+
+This plugin supports playing a local audio file when an MQTT message is received. This can be used for a doorbell or other notification sounds on a Volumio device.
+
+When a message is published to the following MQTT topic: mastercontrol/deurbel
+the plugin executes a shell command to play a WAV file.
+'mastercontrol/deurbel': '/usr/bin/aplay -q /home/volumio/ding-dong2.wav'
+      🔊 Audio device (optional)
+      To specify an audio output device explicitly:
+      mastercontrol/deurbel': '/usr/bin/aplay -D default -q /home/volumio/ding-dong2.wav' 
+
 ## Troubleshooting
 
 If you encounter issues:
